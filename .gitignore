@@ -1,0 +1,4 @@
+# Ignore stupid backup
+*\~
+# ignore python compiles
+*.pyc
