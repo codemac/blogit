@@ -22,3 +22,6 @@ def ls(file=None, rev='HEAD'):
         (out, err, ret) = git_call("ls-tree -r %s:%s" % (rev,file))
     return (out.splitlines(), ret)
 
+def type(file, rev='HEAD'):
+    (out, err, ret) = git_call("cat-file -t %s:%s" % (rev, file))
+    return (out.strip(), ret)

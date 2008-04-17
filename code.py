@@ -2,12 +2,13 @@
 
 import web
 import git
+import settings
 import feed
 
 urls = (
     '/', 'index',
-    '/(.*)', 'page',
     '/(.*)\.atom', 'atomize',
+    '/(.*)', 'page',
 )
 
 class index:
@@ -15,30 +16,31 @@ class index:
         print "Hello, world!"
 
 def dirify(start, list):
-    result = '<table>'
+    result = '<table>\n'
     dir = []
     for entry in list:
         e = entry.split()
-        e[3] = '<a href="' + start + '/' + e[3] + '">' + e[3] + '</a>'
-        result += '<tr>'
+        e[3] = '<a href="'+'/'+start+'/'+e[3]+'">'+e[3]+'</a>'
+        result += '\t<tr>\n'
         for i in e:
-            result += '<td>' + i + '</td>'
-        result += '</tr>'
-    result += '</table>'
+            result += '\t\t<td>' + i + '</td>\n'
+        result += '\t</tr>\n'
+    result += '</table>\n'
     return result
 
 class page:
     def GET(self, file):
         file = file.rstrip('/')
-        (out, ret) = git.ls(file)
+        (out, ret) = git.type(file)
         if ret == 128:
-            (out, ret) = git.show(file)
-            if ret == 128:
-                web.webapi.notfound()
-            else:
-                print out
+            web.webapi.notfound()
+        elif out == 'blob':
+            (fout, fret) = git.show(file)
+            print fout
+        elif out == 'tree':
+            print dirify(file, git.ls(file)[0])
         else:
-            print dirify(file, out)
+            web.webapi.notfound()
 
 
 # Make an atom feed out of a directory in git.
