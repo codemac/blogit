@@ -2,6 +2,7 @@
 
 import web
 import git
+import feed
 
 urls = (
     '/', 'index',
@@ -40,13 +41,26 @@ class page:
             print dirify(file, out)
 
 
-            
-        
-
 # Make an atom feed out of a directory in git.
 class atomize:
     def GET(self, dir):
-        print "Not yet!"
+        xmldoc, atom = feed.new_xmldoc_feed()
+        feed.title = "My Feed!"
+        feed.id = "http://codemac.net" # << url to feed
+        feed.updated = "last date of entry?"
+        links = Link("http://codemac.net") # << url to home.
+        feed.links.append(link)
+        author = Author("Jeff Mickey")
+        feed.authors.append(author)
+        
+        
+        entry = feed.atom.Entry()
+        entry.title = "" # title
+        entry.id = "" # The url
+        entry.updated = "" # date updated
+        entry.content = "" # das content!
+        feed.entries.append(entry)
+        print str(xmldoc)
         
 
 web.webapi.internalerror = web.debugerror
