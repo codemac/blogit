@@ -9,5 +9,13 @@ repo='/home/codemac/pacman.git'
 # the defaut listing
 index='index'
 
+# Default revision for the blog (can be a tag, HEAD^^,
+# whatever as long as git takes it)
+revision='HEAD'
+
 # Git location (helps with windows
 gitexec='/usr/bin/git'
+
+# Blog/wiki specifics (for generating the atom feeds)
+blog_name='Codemac'
+blog_url='http://codemac.net'

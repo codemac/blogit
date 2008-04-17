@@ -11,17 +11,33 @@ def git_call(rest, repo=settings.repo, gitexec=settings.gitexec):
     retcode = call.returncode
     return (out, err, retcode)
 
-def show(file, rev='HEAD'):
+def show(file, rev=settings.revision):
     (out, err, ret) = git_call("show %s:%s" % (rev, file))
     return (out, ret)
 
-def ls(file=None, rev='HEAD'):
-    if file == None:
-        (out, err, ret) = git_call("ls-tree -r %s" % rev)
-    else:
-        (out, err, ret) = git_call("ls-tree -r %s:%s" % (rev,file))
+def ls(file=None, name=False, rev=settings.revision):
+    final = "ls-tree -r"
+    if name:
+        final += " --name-only"
+    final += " %s" % rev
+    if file != None:
+        final += ":%s" % file
+    (out, err, ret) = git_call(final)
     return (out.splitlines(), ret)
 
-def type(file, rev='HEAD'):
+def type(file, rev=settings.revision):
     (out, err, ret) = git_call("cat-file -t %s:%s" % (rev, file))
     return (out.strip(), ret)
+
+def log(file=None, num=None, format=None, rev=settings.revision):
+    final = "log"
+    if num != None:
+        final += " -%d" % num
+    if format != None:
+        final += " --pretty=format:%s" % format
+    final += " %s" % rev
+    if file != None:
+        final += " -- %s" % file
+    (out, err, ret) = git_call(final)
+    return (out.splitlines(), err)
+        
