@@ -29,15 +29,17 @@ def type(file, rev=settings.revision):
     (out, err, ret) = git_call("cat-file -t %s:%s" % (rev, file))
     return (out.strip(), ret)
 
-def log(file=None, num=None, format=None, rev=settings.revision):
+def log(file=None, num=None, format=None, extopts=None, rev=settings.revision):
     final = "log"
     if num != None:
         final += " -%d" % num
     if format != None:
         final += " --pretty=format:%s" % format
+    if extopts != None:
+        final += " %s" % extopts
     final += " %s" % rev
     if file != None:
         final += " -- %s" % file
     (out, err, ret) = git_call(final)
-    return (out.splitlines(), err)
+    return (out, err)
         
