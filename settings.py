@@ -9,6 +9,9 @@ repo='/home/codemac/pacman.git'
 # the defaut listing
 index='index'
 
+# Tree in the git repo of templates
+templates='html'
+
 # Default revision for the blog (can be a tag, HEAD^^,
 # whatever as long as git takes it)
 revision='HEAD'

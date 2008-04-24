@@ -4,12 +4,20 @@ import web
 import git
 import settings
 import feed.atom
+from jinja import Environment, FunctionLoader
+
 
 urls = (
     '/', 'index',
     '/(.*)\.atom', 'atomize',
     '/(.*)', 'page',
 )
+
+# Template environment
+def load_template(templ):
+    return git.show(settings.templates + '/' + templ)
+
+tenv = Environment(loader=FunctionLoader(load_template))
 
 class index:
     def GET(self):
@@ -30,6 +38,31 @@ def dirify(start, list):
     result += '</table>\n'
     return result
 
+# Get jinja comments that define the template dict to send.
+# something like:
+#    {# template : sometemplate.html #}
+#    {# title : This is some entry #}
+#    {# metadata : 23847123987129387 #}
+def get_dict(str):
+    fin = {}
+    lines = str.splitlines()
+    for line in lines:
+        if line.find("{#") > -1:
+            (vari, colo, valu) = line.replace('{# ', ''
+                                              ).replace(' #}', ''
+                                                        ).partition(' : ')
+            fin[vari] = valu
+        else:
+            strfin.apend(line)
+
+    fin['content'] = '\n'.join(strfin)
+    templ = fin['template']
+    del fin['template']
+    return (templ, fin)
+            
+
+    
+
 class page:
     def GET(self, file):
         file = file.rstrip('/')
@@ -38,7 +71,8 @@ class page:
             web.webapi.notfound()
         elif out == 'blob':
             (fout, fret) = git.show(file)
-            print fout
+            (templ, dict) = get_dict(file)
+            print tenv.get_template(templ).render(dict)
         elif out == 'tree':
             print dirify(file, git.ls(file)[0])
         else:
