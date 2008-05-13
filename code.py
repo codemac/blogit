@@ -15,7 +15,8 @@ urls = (
 
 # Template environment
 def load_template(templ):
-    return git.show(settings.templates + '/' + templ)
+    (res, err) = git.show(settings.templates + '/' + templ)
+    return res
 
 tenv = Environment(loader=FunctionLoader(load_template))
 
@@ -46,6 +47,7 @@ def dirify(start, list):
 def get_dict(str):
     fin = {}
     lines = str.splitlines()
+    strfin = []
     for line in lines:
         if line.find("{#") > -1:
             (vari, colo, valu) = line.replace('{# ', ''
@@ -53,9 +55,13 @@ def get_dict(str):
                                                         ).partition(' : ')
             fin[vari] = valu
         else:
-            strfin.apend(line)
+            strfin.append(line)
 
     fin['content'] = '\n'.join(strfin)
+
+    if 'template' not in fin:
+        fin['template'] = 'default.html'
+
     templ = fin['template']
     del fin['template']
     return (templ, fin)
@@ -71,8 +77,9 @@ class page:
             web.webapi.notfound()
         elif out == 'blob':
             (fout, fret) = git.show(file)
-            (templ, dict) = get_dict(file)
-            print tenv.get_template(templ).render(dict)
+            (templ, dict) = get_dict(fout)
+            templ = tenv.get_template(templ)
+            print templ.render(dict)
         elif out == 'tree':
             print dirify(file, git.ls(file)[0])
         else:
