@@ -10,6 +10,7 @@ from jinja import Environment, FunctionLoader
 urls = (
     '/', 'index',
     '/(.*)\.atom', 'atomize',
+    '/(.*)/log/?', 'log',
     '/(.*)', 'page',
 )
 

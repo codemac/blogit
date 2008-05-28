@@ -1,7 +1,7 @@
 # Settings for blogit
 
 # Absolute file location of git dir
-repo='/home/codemac/pacman.git'
+repo='/home/codemac/code/cm-git/dasrepo/.git'
 
 # Default file name for the index of a directory, (e.g
 # go to http://host/blog/ and the file /blog/index is read
